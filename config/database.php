@@ -4,17 +4,30 @@
  */
 
 // Veritabanı dosya yolu
-define('DB_PATH', __DIR__ . '/../database/bilet_otomasyonu.db');
+$dbPath = __DIR__ . '/../database/bilet_otomasyonu.db';
+define('DB_PATH', $dbPath);
+
+// Veritabanı dizinini oluştur
+$dbDir = dirname($dbPath);
+if (!is_dir($dbDir)) {
+    mkdir($dbDir, 0755, true);
+}
 
 // PDO bağlantısı oluştur
 function getDBConnection() {
     try {
+        // Veritabanı dosyasının var olduğundan emin ol
+        if (!file_exists(DB_PATH)) {
+            touch(DB_PATH);
+            chmod(DB_PATH, 0666);
+        }
+        
         $pdo = new PDO('sqlite:' . DB_PATH);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
         return $pdo;
     } catch (PDOException $e) {
-        die('Veritabanı bağlantı hatası: ' . $e->getMessage());
+        die('Veritabanı bağlantı hatası: ' . $e->getMessage() . ' (Dosya: ' . DB_PATH . ')');
     }
 }
 
@@ -31,7 +44,7 @@ function createTables() {
             password VARCHAR(255) NOT NULL,
             full_name VARCHAR(100) NOT NULL,
             phone VARCHAR(20),
-            role ENUM('admin', 'firma_admin', 'user') DEFAULT 'user',
+            role TEXT DEFAULT 'user' CHECK(role IN ('admin', 'firma_admin', 'user')),
             credit DECIMAL(10,2) DEFAULT 0.00,
             company_id INTEGER,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -64,7 +77,7 @@ function createTables() {
             price DECIMAL(10,2) NOT NULL,
             total_seats INTEGER DEFAULT 45,
             available_seats INTEGER DEFAULT 45,
-            status ENUM('active', 'cancelled', 'completed') DEFAULT 'active',
+            status TEXT DEFAULT 'active' CHECK(status IN ('active', 'cancelled', 'completed')),
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (company_id) REFERENCES companies(id)
         )
@@ -81,7 +94,7 @@ function createTables() {
             discount_amount DECIMAL(10,2) DEFAULT 0.00,
             final_price DECIMAL(10,2) NOT NULL,
             coupon_code VARCHAR(50),
-            status ENUM('active', 'cancelled', 'used') DEFAULT 'active',
+            status TEXT DEFAULT 'active' CHECK(status IN ('active', 'cancelled', 'used')),
             purchase_date DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES users(id),
             FOREIGN KEY (trip_id) REFERENCES trips(id)
@@ -99,7 +112,7 @@ function createTables() {
             company_id INTEGER,
             valid_from DATE NOT NULL,
             valid_until DATE NOT NULL,
-            status ENUM('active', 'inactive', 'expired') DEFAULT 'active',
+            status TEXT DEFAULT 'active' CHECK(status IN ('active', 'inactive', 'expired')),
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (company_id) REFERENCES companies(id)
         )
