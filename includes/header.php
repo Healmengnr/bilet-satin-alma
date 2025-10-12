@@ -45,8 +45,8 @@
                                 <li><a class="dropdown-item" href="/tickets.php">Biletlerim</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 
-                                <?php if (hasRole('firma_admin') || hasRole('admin')): ?>
-                                    <li><a class="dropdown-item" href="/firma-admin/">Firma Paneli</a></li>
+                                <?php if (hasRole('company_admin')): ?>
+                                    <li><a class="dropdown-item" href="/company-admin/">Firma Paneli</a></li>
                                 <?php endif; ?>
                                 
                                 <?php if (hasRole('admin')): ?>

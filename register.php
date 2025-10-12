@@ -10,15 +10,13 @@ $error = '';
 $success = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = trim($_POST['username'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
     $password_confirm = $_POST['password_confirm'] ?? '';
     $full_name = trim($_POST['full_name'] ?? '');
-    $phone = trim($_POST['phone'] ?? '');
     
     // Validasyon
-    if (empty($username) || empty($email) || empty($password) || empty($full_name)) {
+    if (empty($email) || empty($password) || empty($full_name)) {
         $error = 'Tüm zorunlu alanları doldurun.';
     } elseif (!validateEmail($email)) {
         $error = 'Geçerli bir e-posta adresi girin.';
@@ -26,16 +24,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Şifre en az ' . PASSWORD_MIN_LENGTH . ' karakter olmalıdır.';
     } elseif ($password !== $password_confirm) {
         $error = 'Şifreler eşleşmiyor.';
-    } elseif (!empty($phone) && !validatePhone($phone)) {
-        $error = 'Geçerli bir telefon numarası girin.';
     } else {
         // Kullanıcı kaydı
         $userData = [
-            'username' => $username,
             'email' => $email,
             'password' => $password,
             'full_name' => $full_name,
-            'phone' => $phone,
             'role' => 'user'
         ];
         
@@ -43,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             setFlashMessage('success', 'Kayıt başarılı! Giriş yapabilirsiniz.');
             redirect('/login.php');
         } else {
-            $error = 'Bu kullanıcı adı veya e-posta zaten kullanılıyor.';
+            $error = 'Bu e-posta zaten kullanılıyor.';
         }
     }
 }
@@ -68,23 +62,12 @@ include 'includes/header.php';
                 <?php endif; ?>
                 
                 <form method="POST" class="needs-validation" novalidate>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="username" class="form-label">Kullanıcı Adı <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="username" name="username" 
-                                   value="<?php echo escape($_POST['username'] ?? ''); ?>" required>
-                            <div class="invalid-feedback">
-                                Lütfen kullanıcı adınızı girin.
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-6 mb-3">
-                            <label for="email" class="form-label">E-posta <span class="text-danger">*</span></label>
-                            <input type="email" class="form-control" id="email" name="email" 
-                                   value="<?php echo escape($_POST['email'] ?? ''); ?>" required>
-                            <div class="invalid-feedback">
-                                Lütfen geçerli bir e-posta adresi girin.
-                            </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">E-posta <span class="text-danger">*</span></label>
+                        <input type="email" class="form-control" id="email" name="email" 
+                               value="<?php echo escape($_POST['email'] ?? ''); ?>" required>
+                        <div class="invalid-feedback">
+                            Lütfen geçerli bir e-posta adresi girin.
                         </div>
                     </div>
                     
@@ -94,16 +77,6 @@ include 'includes/header.php';
                                value="<?php echo escape($_POST['full_name'] ?? ''); ?>" required>
                         <div class="invalid-feedback">
                             Lütfen adınızı ve soyadınızı girin.
-                        </div>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="phone" class="form-label">Telefon</label>
-                        <input type="tel" class="form-control" id="phone" name="phone" 
-                               value="<?php echo escape($_POST['phone'] ?? ''); ?>" 
-                               placeholder="0555 123 45 67">
-                        <div class="form-text">
-                            İsteğe bağlı. Acil durumlar için kullanılır.
                         </div>
                     </div>
                     

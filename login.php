@@ -9,17 +9,17 @@ if (isLoggedIn()) {
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = trim($_POST['username'] ?? '');
+    $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
     
-    if (empty($username) || empty($password)) {
-        $error = 'Kullanıcı adı ve şifre gereklidir.';
+    if (empty($email) || empty($password)) {
+        $error = 'E-posta ve şifre gereklidir.';
     } else {
-        if (loginUser($username, $password)) {
+        if (loginUser($email, $password)) {
             setFlashMessage('success', 'Başarıyla giriş yaptınız!');
             redirect('/');
         } else {
-            $error = 'Kullanıcı adı veya şifre hatalı.';
+            $error = 'E-posta veya şifre hatalı.';
         }
     }
 }
@@ -45,11 +45,11 @@ include 'includes/header.php';
                 
                 <form method="POST" class="needs-validation" novalidate>
                     <div class="mb-3">
-                        <label for="username" class="form-label">Kullanıcı Adı veya E-posta</label>
-                        <input type="text" class="form-control" id="username" name="username" 
-                               value="<?php echo escape($_POST['username'] ?? ''); ?>" required>
+                        <label for="email" class="form-label">E-posta</label>
+                        <input type="email" class="form-control" id="email" name="email" 
+                               value="<?php echo escape($_POST['email'] ?? ''); ?>" required>
                         <div class="invalid-feedback">
-                            Lütfen kullanıcı adınızı veya e-posta adresinizi girin.
+                            Lütfen e-posta adresinizi girin.
                         </div>
                     </div>
                     
@@ -86,9 +86,9 @@ include 'includes/header.php';
             </div>
             <div class="card-body">
                 <small class="text-muted">
-                    <strong>Admin:</strong> admin / admin123<br>
-                    <strong>Firma Admin:</strong> firma1 / firma123<br>
-                    <strong>User:</strong> user1 / user123
+                    <strong>Sistem Admin:</strong> admin@biletotomasyonu.com / admin123<br>
+                    <strong>Normal Kullanıcı:</strong> ahmet@example.com / user123<br>
+                    <strong>Firma Admin:</strong> admin@metroturizm.com / admin123
                 </small>
             </div>
         </div>

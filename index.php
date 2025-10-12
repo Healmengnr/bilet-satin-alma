@@ -41,16 +41,18 @@ include 'includes/header.php';
                             <label for="departure_city" class="form-label">Kalkış Şehri</label>
                             <select class="form-select" id="departure_city" name="departure_city" required>
                                 <option value="">Kalkış şehrini seçin</option>
-                                <option value="istanbul">İstanbul</option>
-                                <option value="ankara">Ankara</option>
-                                <option value="izmir">İzmir</option>
-                                <option value="antalya">Antalya</option>
-                                <option value="bursa">Bursa</option>
-                                <option value="adana">Adana</option>
-                                <option value="gaziantep">Gaziantep</option>
-                                <option value="konya">Konya</option>
-                                <option value="kayseri">Kayseri</option>
-                                <option value="eskisehir">Eskişehir</option>
+                                <option value="İstanbul">İstanbul</option>
+                                <option value="Ankara">Ankara</option>
+                                <option value="İzmir">İzmir</option>
+                                <option value="Antalya">Antalya</option>
+                                <option value="Bursa">Bursa</option>
+                                <option value="Adana">Adana</option>
+                                <option value="Gaziantep">Gaziantep</option>
+                                <option value="Konya">Konya</option>
+                                <option value="Kayseri">Kayseri</option>
+                                <option value="Eskişehir">Eskişehir</option>
+                                <option value="Trabzon">Trabzon</option>
+                                <option value="Samsun">Samsun</option>
                             </select>
                             <div class="invalid-feedback">
                                 Lütfen kalkış şehrini seçin.
@@ -61,16 +63,18 @@ include 'includes/header.php';
                             <label for="arrival_city" class="form-label">Varış Şehri</label>
                             <select class="form-select" id="arrival_city" name="arrival_city" required>
                                 <option value="">Varış şehrini seçin</option>
-                                <option value="istanbul">İstanbul</option>
-                                <option value="ankara">Ankara</option>
-                                <option value="izmir">İzmir</option>
-                                <option value="antalya">Antalya</option>
-                                <option value="bursa">Bursa</option>
-                                <option value="adana">Adana</option>
-                                <option value="gaziantep">Gaziantep</option>
-                                <option value="konya">Konya</option>
-                                <option value="kayseri">Kayseri</option>
-                                <option value="eskisehir">Eskişehir</option>
+                                <option value="İstanbul">İstanbul</option>
+                                <option value="Ankara">Ankara</option>
+                                <option value="İzmir">İzmir</option>
+                                <option value="Antalya">Antalya</option>
+                                <option value="Bursa">Bursa</option>
+                                <option value="Adana">Adana</option>
+                                <option value="Gaziantep">Gaziantep</option>
+                                <option value="Konya">Konya</option>
+                                <option value="Kayseri">Kayseri</option>
+                                <option value="Eskişehir">Eskişehir</option>
+                                <option value="Trabzon">Trabzon</option>
+                                <option value="Samsun">Samsun</option>
                             </select>
                             <div class="invalid-feedback">
                                 Lütfen varış şehrini seçin.
@@ -78,10 +82,11 @@ include 'includes/header.php';
                         </div>
                         
                         <div class="col-md-4 mb-3">
-                            <label for="departure_date" class="form-label">Tarih</label>
-                            <input type="date" class="form-control" id="departure_date" name="departure_date" required>
-                            <div class="invalid-feedback">
-                                Lütfen seyahat tarihini seçin.
+                            <label for="departure_date" class="form-label">Tarih <small class="text-muted">(Opsiyonel)</small></label>
+                            <input type="date" class="form-control" id="departure_date" name="departure_date" 
+                                   min="<?php echo date('Y-m-d'); ?>">
+                            <div class="form-text">
+                                Tarih seçmezseniz gelecekteki tüm seferler gösterilir.
                             </div>
                         </div>
                     </div>
@@ -152,15 +157,15 @@ include 'includes/header.php';
                 </div>
                 <div class="card-body">
                     <h6><?php echo escape($_SESSION['full_name']); ?></h6>
-                    <p class="text-muted mb-2"><?php echo escape($_SESSION['username']); ?></p>
+                    <p class="text-muted mb-2"><?php echo escape($_SESSION['email']); ?></p>
                     
                     <?php
                     $user = getCurrentUser();
                     if ($user):
                     ?>
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span>Hesap Kredisi:</span>
-                            <strong class="text-success"><?php echo formatPrice($user['credit']); ?></strong>
+                            <span>Hesap Bakiyesi:</span>
+                            <strong class="text-success"><?php echo formatPrice($user['balance']); ?></strong>
                         </div>
                     <?php endif; ?>
                     
@@ -180,7 +185,7 @@ include 'includes/header.php';
                     <h5 class="mb-0"><i class="bi bi-person-plus"></i> Hesap Oluşturun</h5>
                 </div>
                 <div class="card-body">
-                    <p class="mb-3">Bilet satın almak için hesap oluşturun ve hemen <?php echo formatPrice(DEFAULT_CREDIT); ?> kredi kazanın!</p>
+                    <p class="mb-3">Bilet satın almak için hesap oluşturun ve hemen <?php echo formatPrice(800); ?> TL bakiye kazanın!</p>
                     <div class="d-grid gap-2">
                         <a href="/register.php" class="btn btn-primary">
                             <i class="bi bi-person-plus"></i> Kayıt Ol

@@ -6,19 +6,20 @@
 /**
  * Kullanıcı giriş yap
  */
-function loginUser($username, $password) {
+function loginUser($email, $password) {
     $pdo = getDBConnection();
     
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ? OR email = ?");
-    $stmt->execute([$username, $username]);
+    $stmt = $pdo->prepare("SELECT * FROM User WHERE email = ?");
+    $stmt->execute([$email]);
     $user = $stmt->fetch();
     
     if ($user && verifyPassword($password, $user['password'])) {
         $_SESSION['user_id'] = $user['id'];
-        $_SESSION['username'] = $user['username'];
+        $_SESSION['email'] = $user['email'];
         $_SESSION['user_role'] = $user['role'];
         $_SESSION['full_name'] = $user['full_name'];
         $_SESSION['company_id'] = $user['company_id'];
+        $_SESSION['balance'] = $user['balance'];
         
         return true;
     }
@@ -32,27 +33,28 @@ function loginUser($username, $password) {
 function registerUser($data) {
     $pdo = getDBConnection();
     
-    // Kullanıcı adı ve email kontrolü
-    $stmt = $pdo->prepare("SELECT id FROM users WHERE username = ? OR email = ?");
-    $stmt->execute([$data['username'], $data['email']]);
+    // Email kontrolü
+    $stmt = $pdo->prepare("SELECT id FROM User WHERE email = ?");
+    $stmt->execute([$data['email']]);
     if ($stmt->fetch()) {
         return false; // Kullanıcı zaten mevcut
     }
     
     // Yeni kullanıcı oluştur
+    $userId = generateUUID();
     $stmt = $pdo->prepare("
-        INSERT INTO users (username, email, password, full_name, phone, role, credit) 
+        INSERT INTO User (id, full_name, email, password, role, company_id, balance) 
         VALUES (?, ?, ?, ?, ?, ?, ?)
     ");
     
     $result = $stmt->execute([
-        $data['username'],
+        $userId,
+        $data['full_name'],
         $data['email'],
         hashPassword($data['password']),
-        $data['full_name'],
-        $data['phone'] ?? null,
         $data['role'] ?? 'user',
-        DEFAULT_CREDIT
+        $data['company_id'] ?? null,
+        800.00 // Default balance
     ]);
     
     return $result;
@@ -75,30 +77,30 @@ function getCurrentUser() {
     }
     
     $pdo = getDBConnection();
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
+    $stmt = $pdo->prepare("SELECT * FROM User WHERE id = ?");
     $stmt->execute([$_SESSION['user_id']]);
     return $stmt->fetch();
 }
 
 /**
- * Kullanıcı kredisi güncelle
+ * Kullanıcı bakiyesi güncelle
  */
-function updateUserCredit($userId, $amount) {
+function updateUserBalance($userId, $amount) {
     $pdo = getDBConnection();
-    $stmt = $pdo->prepare("UPDATE users SET credit = credit + ? WHERE id = ?");
+    $stmt = $pdo->prepare("UPDATE User SET balance = balance + ? WHERE id = ?");
     return $stmt->execute([$amount, $userId]);
 }
 
 /**
- * Kullanıcı kredisi kontrol et
+ * Kullanıcı bakiyesi kontrol et
  */
-function checkUserCredit($userId, $amount) {
+function checkUserBalance($userId, $amount) {
     $pdo = getDBConnection();
-    $stmt = $pdo->prepare("SELECT credit FROM users WHERE id = ?");
+    $stmt = $pdo->prepare("SELECT balance FROM User WHERE id = ?");
     $stmt->execute([$userId]);
     $user = $stmt->fetch();
     
-    return $user && $user['credit'] >= $amount;
+    return $user && $user['balance'] >= $amount;
 }
 
 /**
@@ -123,9 +125,9 @@ function requireAdmin() {
     requireRole('admin');
 }
 
-function requireFirmaAdmin() {
-    if (!hasRole('admin') && !hasRole('firma_admin')) {
-        requireRole('firma_admin');
+function requireCompanyAdmin() {
+    if (!hasRole('admin') && !hasRole('company_admin')) {
+        requireRole('company_admin');
     }
 }
 ?>

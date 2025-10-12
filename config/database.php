@@ -31,94 +31,113 @@ function getDBConnection() {
     }
 }
 
+// UUID oluşturma fonksiyonu
+function generateUUID() {
+    return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+        mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+        mt_rand(0, 0xffff),
+        mt_rand(0, 0x0fff) | 0x4000,
+        mt_rand(0, 0x3fff) | 0x8000,
+        mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+    );
+}
+
 // Veritabanı tablolarını oluştur
 function createTables() {
     $pdo = getDBConnection();
     
-    // Kullanıcılar tablosu
+    // Bus_Company tablosu (önce oluşturulmalı çünkü User tabanına referans veriyor)
     $pdo->exec("
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username VARCHAR(50) UNIQUE NOT NULL,
-            email VARCHAR(100) UNIQUE NOT NULL,
-            password VARCHAR(255) NOT NULL,
-            full_name VARCHAR(100) NOT NULL,
-            phone VARCHAR(20),
-            role TEXT DEFAULT 'user' CHECK(role IN ('admin', 'firma_admin', 'user')),
-            credit DECIMAL(10,2) DEFAULT 0.00,
-            company_id INTEGER,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (company_id) REFERENCES companies(id)
+        CREATE TABLE IF NOT EXISTS Bus_Company (
+            id TEXT PRIMARY KEY,
+            name TEXT UNIQUE NOT NULL,
+            logo_path TEXT,
+            contact_email TEXT,
+            contact_phone TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     ");
     
-    // Firmalar tablosu
+    // User tablosu
     $pdo->exec("
-        CREATE TABLE IF NOT EXISTS companies (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name VARCHAR(100) NOT NULL,
-            description TEXT,
-            contact_email VARCHAR(100),
-            contact_phone VARCHAR(20),
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        CREATE TABLE IF NOT EXISTS User (
+            id TEXT PRIMARY KEY,
+            full_name TEXT NOT NULL,
+            email TEXT UNIQUE NOT NULL,
+            role TEXT NOT NULL CHECK(role IN ('user', 'company_admin', 'admin')),
+            password TEXT NOT NULL,
+            company_id TEXT,
+            balance REAL DEFAULT 800,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (company_id) REFERENCES Bus_Company(id)
         )
     ");
     
-    // Seferler tablosu
+    // Trips tablosu
     $pdo->exec("
-        CREATE TABLE IF NOT EXISTS trips (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            company_id INTEGER NOT NULL,
-            departure_city VARCHAR(100) NOT NULL,
-            arrival_city VARCHAR(100) NOT NULL,
-            departure_date DATE NOT NULL,
-            departure_time TIME NOT NULL,
-            arrival_time TIME NOT NULL,
-            price DECIMAL(10,2) NOT NULL,
-            total_seats INTEGER DEFAULT 45,
-            available_seats INTEGER DEFAULT 45,
-            status TEXT DEFAULT 'active' CHECK(status IN ('active', 'cancelled', 'completed')),
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (company_id) REFERENCES companies(id)
+        CREATE TABLE IF NOT EXISTS Trips (
+            id TEXT PRIMARY KEY,
+            company_id TEXT NOT NULL,
+            destination_city TEXT NOT NULL,
+            arrival_time DATETIME NOT NULL,
+            departure_time DATETIME NOT NULL,
+            departure_city TEXT NOT NULL,
+            price INTEGER NOT NULL,
+            capacity INTEGER NOT NULL,
+            created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (company_id) REFERENCES Bus_Company(id)
         )
     ");
     
-    // Biletler tablosu
+    // Tickets tablosu
     $pdo->exec("
-        CREATE TABLE IF NOT EXISTS tickets (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
-            trip_id INTEGER NOT NULL,
+        CREATE TABLE IF NOT EXISTS Tickets (
+            id TEXT PRIMARY KEY,
+            trip_id TEXT NOT NULL,
+            user_id TEXT NOT NULL,
+            status TEXT NOT NULL DEFAULT 'active' CHECK(status IN ('active', 'cancelled', 'expired')),
+            total_price INTEGER NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (trip_id) REFERENCES Trips(id),
+            FOREIGN KEY (user_id) REFERENCES User(id)
+        )
+    ");
+    
+    // Booked_Seats tablosu
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS Booked_Seats (
+            id TEXT PRIMARY KEY,
+            ticket_id TEXT NOT NULL,
             seat_number INTEGER NOT NULL,
-            price DECIMAL(10,2) NOT NULL,
-            discount_amount DECIMAL(10,2) DEFAULT 0.00,
-            final_price DECIMAL(10,2) NOT NULL,
-            coupon_code VARCHAR(50),
-            status TEXT DEFAULT 'active' CHECK(status IN ('active', 'cancelled', 'used')),
-            purchase_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users(id),
-            FOREIGN KEY (trip_id) REFERENCES trips(id)
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (ticket_id) REFERENCES Tickets(id)
         )
     ");
     
-    // Kuponlar tablosu
+    // Coupons tablosu
     $pdo->exec("
-        CREATE TABLE IF NOT EXISTS coupons (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            code VARCHAR(50) UNIQUE NOT NULL,
-            discount_percentage INTEGER NOT NULL,
-            max_usage INTEGER DEFAULT 100,
-            used_count INTEGER DEFAULT 0,
-            company_id INTEGER,
-            valid_from DATE NOT NULL,
-            valid_until DATE NOT NULL,
-            status TEXT DEFAULT 'active' CHECK(status IN ('active', 'inactive', 'expired')),
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (company_id) REFERENCES companies(id)
+        CREATE TABLE IF NOT EXISTS Coupons (
+            id TEXT PRIMARY KEY,
+            code TEXT NOT NULL,
+            discount REAL NOT NULL,
+            usage_limit INTEGER NOT NULL,
+            expire_date DATETIME NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ");
+    
+    // User_Coupons tablosu
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS User_Coupons (
+            id TEXT PRIMARY KEY,
+            coupon_id TEXT NOT NULL,
+            user_id TEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (coupon_id) REFERENCES Coupons(id),
+            FOREIGN KEY (user_id) REFERENCES User(id)
         )
     ");
 }
 
-// Veritabanı başlat
 createTables();
 ?>

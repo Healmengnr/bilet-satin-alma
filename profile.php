@@ -17,8 +17,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     // Profil bilgilerini güncelle
     if (!empty($full_name)) {
-        $stmt = $pdo->prepare("UPDATE users SET full_name = ?, phone = ? WHERE id = ?");
-        if ($stmt->execute([$full_name, $phone, $user['id']])) {
+        $stmt = $pdo->prepare("UPDATE User SET full_name = ? WHERE id = ?");
+        if ($stmt->execute([$full_name, $user['id']])) {
             $_SESSION['full_name'] = $full_name;
             $success = 'Profil bilgileri güncellendi.';
         } else {
@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif ($new_password !== $confirm_password) {
             $error = 'Yeni şifreler eşleşmiyor.';
         } else {
-            $stmt = $pdo->prepare("UPDATE users SET password = ? WHERE id = ?");
+            $stmt = $pdo->prepare("UPDATE User SET password = ? WHERE id = ?");
             if ($stmt->execute([hashPassword($new_password), $user['id']])) {
                 $success = 'Şifre başarıyla değiştirildi.';
             } else {
@@ -66,10 +66,6 @@ include 'includes/header.php';
                 
                 <table class="table table-borderless">
                     <tr>
-                        <td><strong>Kullanıcı Adı:</strong></td>
-                        <td><?php echo escape($user['username']); ?></td>
-                    </tr>
-                    <tr>
                         <td><strong>E-posta:</strong></td>
                         <td><?php echo escape($user['email']); ?></td>
                     </tr>
@@ -78,16 +74,12 @@ include 'includes/header.php';
                         <td><?php echo escape($user['full_name']); ?></td>
                     </tr>
                     <tr>
-                        <td><strong>Telefon:</strong></td>
-                        <td><?php echo escape($user['phone'] ?: 'Belirtilmemiş'); ?></td>
-                    </tr>
-                    <tr>
                         <td><strong>Rol:</strong></td>
                         <td>
                             <?php
                             $roleNames = [
-                                'admin' => 'Admin',
-                                'firma_admin' => 'Firma Admin',
+                                'admin' => 'Sistem Admin',
+                                'company_admin' => 'Firma Admin',
                                 'user' => 'Kullanıcı'
                             ];
                             echo $roleNames[$user['role']] ?? $user['role'];
@@ -108,8 +100,8 @@ include 'includes/header.php';
                 <h5 class="mb-0"><i class="bi bi-wallet2"></i> Hesap Kredisi</h5>
             </div>
             <div class="card-body text-center">
-                <h3 class="text-success"><?php echo formatPrice($user['credit']); ?></h3>
-                <p class="text-muted mb-0">Kullanılabilir kredi</p>
+                <h3 class="text-success"><?php echo formatPrice($user['balance']); ?></h3>
+                <p class="text-muted mb-0">Kullanılabilir bakiye</p>
             </div>
         </div>
     </div>
@@ -134,18 +126,10 @@ include 'includes/header.php';
                 <?php endif; ?>
                 
                 <form method="POST" class="needs-validation" novalidate>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="full_name" class="form-label">Ad Soyad</label>
-                            <input type="text" class="form-control" id="full_name" name="full_name" 
-                                   value="<?php echo escape($user['full_name']); ?>" required>
-                        </div>
-                        
-                        <div class="col-md-6 mb-3">
-                            <label for="phone" class="form-label">Telefon</label>
-                            <input type="tel" class="form-control" id="phone" name="phone" 
-                                   value="<?php echo escape($user['phone']); ?>">
-                        </div>
+                    <div class="mb-3">
+                        <label for="full_name" class="form-label">Ad Soyad</label>
+                        <input type="text" class="form-control" id="full_name" name="full_name" 
+                               value="<?php echo escape($user['full_name']); ?>" required>
                     </div>
                     
                     <div class="d-grid">
@@ -210,13 +194,16 @@ include 'includes/header.php';
                     </div>
                 </div>
                 
-                <?php if (hasRole('firma_admin') || hasRole('admin')): ?>
+                <?php if (hasRole('company_admin') || hasRole('admin')): ?>
                     <div class="row">
-                        <div class="col-md-6 mb-2">
-                            <a href="/firma-admin/" class="btn btn-outline-info w-100">
-                                <i class="bi bi-building"></i> Firma Paneli
-                            </a>
-                        </div>
+                        <?php if (hasRole('company_admin')): ?>
+                            <div class="col-md-6 mb-2">
+                                <a href="/company-admin/" class="btn btn-outline-info w-100">
+                                    <i class="bi bi-building"></i> Firma Paneli
+                                </a>
+                            </div>
+                        <?php endif; ?>
+                        
                         <?php if (hasRole('admin')): ?>
                             <div class="col-md-6 mb-2">
                                 <a href="/admin/" class="btn btn-outline-danger w-100">
