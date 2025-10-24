@@ -2,7 +2,7 @@
 
 PHP ile yazılmış modern otobüs bileti satış sistemi. Docker ile paketlenmiş, rol tabanlı yetkilendirme sistemi içerir.
 
-## 🚀 Hızlı Başlangıç
+##  Hızlı Başlangıç
 
 ### Gereksinimler
 - Docker
@@ -28,25 +28,13 @@ docker exec biletotomasyonu-web-1 php init_demo_data.php
 - **Web Sitesi:** http://localhost:8080
 - **Dashboard:** http://localhost:8080/dashboard
 
-## 🏗️ Teknik Özellikler
+##  Teknik Özellikler
 
 - **Backend:** PHP 8.1
 - **Veritabanı:** SQLite
 - **Frontend:** Bootstrap 5, JavaScript
-- **PDF:** dompdf kütüphanesi
-- **Container:** Docker & Docker Compose
 
-## 🔐 Güvenlik Önlemleri
-
-- SQL injection koruması
-- XSS koruması  
-- Path traversal koruması
-- CSRF token sistemi
-- Şifre hash'leme
-- Session güvenliği
-- Rol tabanlı erişim kontrolü
-
-## 👥 Demo Hesaplar
+##  Demo Hesaplar
 
 - **Sistem Admin:** admin@healmego.com / admin123
 - **Firma Admin:** admin@metroturizm.com / admin123
@@ -57,24 +45,8 @@ docker exec biletotomasyonu-web-1 php init_demo_data.php
   - mehmet@healmego.com / hilmipro123
   - fevzi@healmego.com / hilmipro123
 
-## 🛠️ Geliştirme
 
-### Docker Komutları
-```bash
-# Container'ları durdur
-docker-compose down
-
-# Logları görüntüle
-docker-compose logs -f
-
-# Container'a bağlan
-docker exec -it biletotomasyonu-web-1 bash
-
-# Image'ı yeniden build et
-docker-compose build --no-cache
-```
-
-### Veritabanı Sıfırlama
+## Veritabanı Sıfırlama
 ```bash
 # Demo verilerini yeniden yükle
 docker exec biletotomasyonu-web-1 php init_demo_data.php
