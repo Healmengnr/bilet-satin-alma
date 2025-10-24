@@ -16,7 +16,7 @@ docker-compose build
 
 docker-compose up -d
 
-docker exec biletotomasyonu-web-1 php init_demo_data.php
+docker exec bilet-satin-alma-main-web-1 php init_demo_data.php
 ```
 
 ### Erişim
@@ -44,5 +44,5 @@ docker exec biletotomasyonu-web-1 php init_demo_data.php
 ```bash
 rm -rf database/
 
-docker exec biletotomasyonu-web-1 php init_demo_data.php
+docker exec bilet-satin-alma-main-web-1 php init_demo_data.php
 ```
