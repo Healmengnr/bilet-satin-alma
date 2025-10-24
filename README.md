@@ -1,7 +1,5 @@
 # HealmeGO - Otobüs Bileti Platformu
 
-PHP ile yazılmış modern otobüs bileti satış sistemi. Docker ile paketlenmiş, rol tabanlı yetkilendirme sistemi içerir.
-
 ##  Hızlı Başlangıç
 
 ### Gereksinimler
