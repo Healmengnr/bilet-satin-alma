@@ -1,11 +1,5 @@
 <?php
-/**
- * Kimlik Doğrulama Fonksiyonları
- */
 
-/**
- * Kullanıcı giriş yap
- */
 function loginUser($email, $password) {
     $pdo = getDBConnection();
     
@@ -27,50 +21,38 @@ function loginUser($email, $password) {
     return false;
 }
 
-/**
- * Kullanıcı kayıt ol
- */
 function registerUser($data) {
     $pdo = getDBConnection();
     
-    // Email kontrolü
     $stmt = $pdo->prepare("SELECT id FROM User WHERE email = ?");
     $stmt->execute([$data['email']]);
     if ($stmt->fetch()) {
-        return false; // Kullanıcı zaten mevcut
+        return false;
     }
-    
-    // Yeni kullanıcı oluştur
-    $userId = generateUUID();
+    $user_id = generateUUID();
     $stmt = $pdo->prepare("
         INSERT INTO User (id, full_name, email, password, role, company_id, balance) 
         VALUES (?, ?, ?, ?, ?, ?, ?)
     ");
     
     $result = $stmt->execute([
-        $userId,
+        $user_id,
         $data['full_name'],
         $data['email'],
         hashPassword($data['password']),
         $data['role'] ?? 'user',
         $data['company_id'] ?? null,
-        800.00 // Default balance
+        800.00
     ]);
     
     return $result;
 }
 
-/**
- * Kullanıcı çıkış yap
- */
 function logoutUser() {
     session_destroy();
     session_start();
 }
 
-/**
- * Mevcut kullanıcı bilgilerini al
- */
 function getCurrentUser() {
     if (!isLoggedIn()) {
         return null;
@@ -82,30 +64,21 @@ function getCurrentUser() {
     return $stmt->fetch();
 }
 
-/**
- * Kullanıcı bakiyesi güncelle
- */
-function updateUserBalance($userId, $amount) {
+function updateUserBalance($user_id, $amount) {
     $pdo = getDBConnection();
     $stmt = $pdo->prepare("UPDATE User SET balance = balance + ? WHERE id = ?");
-    return $stmt->execute([$amount, $userId]);
+    return $stmt->execute([$amount, $user_id]);
 }
 
-/**
- * Kullanıcı bakiyesi kontrol et
- */
-function checkUserBalance($userId, $amount) {
+function checkUserBalance($user_id, $amount) {
     $pdo = getDBConnection();
     $stmt = $pdo->prepare("SELECT balance FROM User WHERE id = ?");
-    $stmt->execute([$userId]);
+    $stmt->execute([$user_id]);
     $user = $stmt->fetch();
     
     return $user && $user['balance'] >= $amount;
 }
 
-/**
- * Yetki kontrolü
- */
 function requireLogin() {
     if (!isLoggedIn()) {
         setFlashMessage('error', 'Bu sayfaya erişmek için giriş yapmalısınız.');

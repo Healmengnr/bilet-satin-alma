@@ -1,0 +1,13 @@
+{
+    "name": "biletotomasyonu/app",
+    "description": "Bilet Otomasyonu Uygulaması",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Developer"
+        }
+    ],
+    "require": {
+        "dompdf/dompdf": "^3.1"
+    }
+}

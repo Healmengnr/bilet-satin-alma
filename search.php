@@ -1,6 +1,10 @@
 <?php
 require_once 'config/config.php';
 
+if (isLoggedIn() && (hasRole('admin') || hasRole('company_admin'))) {
+    redirect403();
+}
+
 $page_title = 'Sefer Ara';
 include 'includes/header.php';
 

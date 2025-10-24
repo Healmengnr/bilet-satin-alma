@@ -29,9 +29,11 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/">Ana Sayfa</a>
                     </li>
+                    <?php if (isLoggedIn() && hasRole('user')): ?>
                     <li class="nav-item">
                         <a class="nav-link" href="/search.php">Sefer Ara</a>
                     </li>
+                    <?php endif; ?>
                 </ul>
                 
                 <ul class="navbar-nav">
@@ -42,15 +44,13 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="/profile.php">Hesabım</a></li>
+                                <?php if (hasRole('user')): ?>
                                 <li><a class="dropdown-item" href="/tickets.php">Biletlerim</a></li>
+                                <?php endif; ?>
                                 <li><hr class="dropdown-divider"></li>
                                 
-                                <?php if (hasRole('company_admin')): ?>
-                                    <li><a class="dropdown-item" href="/company-admin/">Firma Paneli</a></li>
-                                <?php endif; ?>
-                                
-                                <?php if (hasRole('admin')): ?>
-                                    <li><a class="dropdown-item" href="/admin/">Admin Paneli</a></li>
+                                <?php if (hasRole('company_admin') || hasRole('admin')): ?>
+                                    <li><a class="dropdown-item" href="/dashboard/">Dashboard</a></li>
                                 <?php endif; ?>
                                 
                                 <li><a class="dropdown-item" href="/logout.php">Çıkış Yap</a></li>

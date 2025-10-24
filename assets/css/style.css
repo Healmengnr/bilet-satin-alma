@@ -1,5 +1,3 @@
-/* Custom CSS for Bilet Otomasyonu */
-
 :root {
     --primary-color: #0d6efd;
     --secondary-color: #6c757d;
@@ -278,4 +276,213 @@ footer {
 
 .border-primary-custom {
     border-color: var(--primary-color) !important;
+}
+
+/* Bus Layout Styles */
+.bus-layout-container {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+.bus-outline {
+    position: relative;
+    width: 500px;
+    height: 400px;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border: 3px solid #6c757d;
+    border-radius: 25px;
+    padding: 30px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.driver-area {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    background: #6c757d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.seat-layout {
+    display: flex;
+    gap: 30px;
+    height: 100%;
+    padding-left: 80px;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.seat-column {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.left-column {
+    width: 60px;
+}
+
+.right-column {
+    width: 120px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.seat-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.right-column .seat {
+    margin-bottom: 0;
+}
+
+.aisle {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 20px;
+    background: linear-gradient(90deg, transparent, #6c757d, transparent);
+    transform: translateX(-50%);
+    opacity: 0.3;
+}
+
+.seat {
+    width: 45px;
+    height: 45px;
+    border: 2px solid #dee2e6;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.seat.available {
+    background-color: #fff;
+    color: #495057;
+}
+
+.seat.available:hover {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+    transform: scale(1.05);
+}
+
+.seat.selected {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0,123,255,0.3);
+}
+
+.seat.occupied {
+    background-color: #dc3545;
+    color: white;
+    border-color: #dc3545;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.bus-label {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.seat-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.legend-item .seat {
+    width: 35px;
+    height: 35px;
+    font-size: 12px;
+}
+
+.selected-seats-list {
+    margin-bottom: 15px;
+}
+
+.selected-seats-list .badge {
+    font-size: 14px;
+    padding: 8px 12px;
+}
+
+/* Modal Enhancements */
+.modal-xl {
+    max-width: 90%;
+}
+
+.modal-content {
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    border-radius: 15px 15px 0 0;
+}
+
+.modal-header .btn-close {
+    filter: invert(1);
+}
+
+/* Trip Card Enhancements */
+.trip-item {
+    transition: all 0.3s ease;
+}
+
+.trip-item:hover {
+    background-color: rgba(0,123,255,0.05);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.trip-price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--success-color);
+}
+
+.trip-time {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--primary-color);
 }

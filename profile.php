@@ -94,7 +94,8 @@ include 'includes/header.php';
             </div>
         </div>
         
-        <!-- Credit Card -->
+        <!-- Credit Card - Sadece User rolü için -->
+        <?php if (hasRole('user')): ?>
         <div class="card mt-3">
             <div class="card-header">
                 <h5 class="mb-0"><i class="bi bi-wallet2"></i> Hesap Kredisi</h5>
@@ -104,6 +105,38 @@ include 'includes/header.php';
                 <p class="text-muted mb-0">Kullanılabilir bakiye</p>
             </div>
         </div>
+        <?php endif; ?>
+        
+        <!-- Kredi Ekleme Alanı - Sadece User rolü için -->
+        <?php if (hasRole('user')): ?>
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-plus-circle"></i> Kredi Ekle</h5>
+            </div>
+            <div class="card-body">
+                <form id="addCreditForm" class="needs-validation" novalidate>
+                    <div class="mb-3">
+                        <label for="creditAmount" class="form-label">Eklenecek Miktar</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="creditAmount" name="amount" 
+                                   min="1" max="10000" step="1" required>
+                            <span class="input-group-text">TL</span>
+                        </div>
+                        <div class="invalid-feedback">
+                            Lütfen geçerli bir miktar girin (1-10000 TL arası).
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-plus-circle"></i> Kredi Ekle
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <?php endif; ?>
     </div>
     
     <div class="col-md-8">
@@ -175,46 +208,56 @@ include 'includes/header.php';
             </div>
         </div>
         
-        <!-- Quick Actions -->
-        <div class="card mt-4">
-            <div class="card-header">
-                <h5 class="mb-0"><i class="bi bi-lightning"></i> Hızlı İşlemler</h5>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6 mb-2">
-                        <a href="/tickets.php" class="btn btn-outline-primary w-100">
-                            <i class="bi bi-ticket"></i> Biletlerim
-                        </a>
-                    </div>
-                    <div class="col-md-6 mb-2">
-                        <a href="/search.php" class="btn btn-outline-success w-100">
-                            <i class="bi bi-search"></i> Sefer Ara
-                        </a>
-                    </div>
-                </div>
-                
-                <?php if (hasRole('company_admin') || hasRole('admin')): ?>
-                    <div class="row">
-                        <?php if (hasRole('company_admin')): ?>
-                            <div class="col-md-6 mb-2">
-                                <a href="/company-admin/" class="btn btn-outline-info w-100">
-                                    <i class="bi bi-building"></i> Firma Paneli
-                                </a>
-                            </div>
-                        <?php endif; ?>
-                        
-                        <?php if (hasRole('admin')): ?>
-                            <div class="col-md-6 mb-2">
-                                <a href="/admin/" class="btn btn-outline-danger w-100">
-                                    <i class="bi bi-shield-check"></i> Admin Paneli
-                                </a>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                <?php endif; ?>
-            </div>
-        </div>
+         <!-- Quick Actions - Sadece User rolü için -->
+         <?php if (hasRole('user')): ?>
+         <div class="card mt-4">
+             <div class="card-header">
+                 <h5 class="mb-0"><i class="bi bi-lightning"></i> Hızlı İşlemler</h5>
+             </div>
+             <div class="card-body">
+                 <div class="row">
+                     <div class="col-md-6 mb-2">
+                         <a href="/tickets.php" class="btn btn-outline-primary w-100">
+                             <i class="bi bi-ticket"></i> Biletlerim
+                         </a>
+                     </div>
+                     <div class="col-md-6 mb-2">
+                         <a href="/search.php" class="btn btn-outline-success w-100">
+                             <i class="bi bi-search"></i> Sefer Ara
+                         </a>
+                     </div>
+                 </div>
+             </div>
+         </div>
+         <?php endif; ?>
+         
+         <!-- Admin Panelleri - Sadece Admin ve Company Admin için -->
+         <?php if (hasRole('company_admin') || hasRole('admin')): ?>
+         <div class="card mt-4">
+             <div class="card-header">
+                 <h5 class="mb-0"><i class="bi bi-gear"></i> Yönetim Paneli</h5>
+             </div>
+             <div class="card-body">
+                 <div class="row">
+                     <?php if (hasRole('company_admin')): ?>
+                         <div class="col-md-6 mb-2">
+                             <a href="/dashboard/" class="btn btn-outline-info w-100">
+                                 <i class="bi bi-building"></i> Dashboard
+                             </a>
+                         </div>
+                     <?php endif; ?>
+                     
+                     <?php if (hasRole('admin')): ?>
+                         <div class="col-md-6 mb-2">
+                             <a href="/dashboard/" class="btn btn-outline-danger w-100">
+                                 <i class="bi bi-shield-check"></i> Dashboard
+                             </a>
+                         </div>
+                     <?php endif; ?>
+                 </div>
+             </div>
+         </div>
+         <?php endif; ?>
     </div>
 </div>
 
@@ -230,6 +273,76 @@ document.getElementById('confirm_password').addEventListener('input', function()
         this.setCustomValidity('');
     }
 });
+
+// Kredi ekleme formu
+document.getElementById('addCreditForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    if (!this.checkValidity()) {
+        e.stopPropagation();
+        this.classList.add('was-validated');
+        return;
+    }
+    
+    const formData = new FormData(this);
+    const amount = formData.get('amount');
+    const reason = formData.get('reason');
+    
+    // Loading state
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Ekleniyor...';
+    submitBtn.disabled = true;
+    
+    fetch('/api/add-credit.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Başarılı mesajı göster
+            showAlert('success', data.message);
+            
+            // Sayfayı yenile
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        } else {
+            showAlert('danger', data.message || 'Kredi eklenirken hata oluştu');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showAlert('danger', 'Bir hata oluştu. Lütfen tekrar deneyin.');
+    })
+    .finally(() => {
+        // Loading state'i kaldır
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    });
+});
+
+// Alert fonksiyonu
+function showAlert(type, message) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+    alertDiv.innerHTML = `
+        <i class="bi bi-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i> ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    // Form'un üstüne ekle
+    const form = document.getElementById('addCreditForm');
+    form.parentNode.insertBefore(alertDiv, form);
+    
+    // 5 saniye sonra otomatik kapat
+    setTimeout(() => {
+        if (alertDiv.parentNode) {
+            alertDiv.remove();
+        }
+    }, 5000);
+}
 </script>
 
 <?php include 'includes/footer.php'; ?>

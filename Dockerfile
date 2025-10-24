@@ -4,8 +4,16 @@ FROM php:8.3-apache
 RUN apt-get update && apt-get install -y \
     sqlite3 \
     libsqlite3-dev \
+    git \
+    unzip \
     && docker-php-ext-install pdo pdo_sqlite \
     && rm -rf /var/lib/apt/lists/*
+
+# Composer kurulumu
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# dompdf kurulumu
+RUN composer require dompdf/dompdf
 
 # Apache mod_rewrite'ı etkinleştir
 RUN a2enmod rewrite

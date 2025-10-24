@@ -1,9 +1,13 @@
 <?php
 require_once 'config/config.php';
 
-// Eğer zaten giriş yapmışsa ana sayfaya yönlendir
+// Eğer zaten giriş yapmışsa rolüne göre yönlendir
 if (isLoggedIn()) {
-    redirect('/');
+    if (hasRole('admin') || hasRole('company_admin')) {
+        redirect('/dashboard/');
+    } else {
+        redirect('/');
+    }
 }
 
 $error = '';
@@ -17,7 +21,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         if (loginUser($email, $password)) {
             setFlashMessage('success', 'Başarıyla giriş yaptınız!');
-            redirect('/');
+            // Rolüne göre yönlendir
+            if (hasRole('admin') || hasRole('company_admin')) {
+                redirect('/dashboard/');
+            } else {
+                redirect('/');
+            }
         } else {
             $error = 'E-posta veya şifre hatalı.';
         }
@@ -86,9 +95,14 @@ include 'includes/header.php';
             </div>
             <div class="card-body">
                 <small class="text-muted">
-                    <strong>Sistem Admin:</strong> admin@biletotomasyonu.com / admin123<br>
-                    <strong>Normal Kullanıcı:</strong> ahmet@example.com / user123<br>
-                    <strong>Firma Admin:</strong> admin@metroturizm.com / admin123
+                    <strong>Sistem Admin:</strong> admin@healmego.com / admin123<br>
+                    <strong>Firma Admin:</strong> admin@metroturizm.com / admin123<br><br>
+                    <strong>Demo Kullanıcılar:</strong><br>
+                    • hilmi@healmego.com / hilmipro123<br>
+                    • testo@healmego.com / hilmipro123<br>
+                    • hasan@healmego.com / hilmipro123<br>
+                    • mehmet@healmego.com / hilmipro123<br>
+                    • fevzi@healmego.com / hilmipro123
                 </small>
             </div>
         </div>

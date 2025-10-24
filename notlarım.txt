@@ -1,0 +1,8 @@
+2- yetki tablosunu incele ona göre yeniden düzenle.
+
+* yetki tablosunda sadece bu kaldı: 
+    Profil bilgileri, kredisi, geçmiş biletleri ve PDF indirme.
+
+
+
+

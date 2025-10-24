@@ -1,22 +1,15 @@
 <?php
-/**
- * Veritabanı Konfigürasyonu
- */
 
-// Veritabanı dosya yolu
-$dbPath = __DIR__ . '/../database/bilet_otomasyonu.db';
+$dbPath = __DIR__ . '/../database/bilet_otomasyonu.sqlite';
 define('DB_PATH', $dbPath);
 
-// Veritabanı dizinini oluştur
 $dbDir = dirname($dbPath);
 if (!is_dir($dbDir)) {
     mkdir($dbDir, 0755, true);
 }
 
-// PDO bağlantısı oluştur
 function getDBConnection() {
     try {
-        // Veritabanı dosyasının var olduğundan emin ol
         if (!file_exists(DB_PATH)) {
             touch(DB_PATH);
             chmod(DB_PATH, 0666);
@@ -31,7 +24,6 @@ function getDBConnection() {
     }
 }
 
-// UUID oluşturma fonksiyonu
 function generateUUID() {
     return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
         mt_rand(0, 0xffff), mt_rand(0, 0xffff),
@@ -42,11 +34,9 @@ function generateUUID() {
     );
 }
 
-// Veritabanı tablolarını oluştur
 function createTables() {
     $pdo = getDBConnection();
     
-    // Bus_Company tablosu (önce oluşturulmalı çünkü User tabanına referans veriyor)
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS Bus_Company (
             id TEXT PRIMARY KEY,
@@ -83,7 +73,7 @@ function createTables() {
             departure_time DATETIME NOT NULL,
             departure_city TEXT NOT NULL,
             price INTEGER NOT NULL,
-            capacity INTEGER NOT NULL,
+            capacity INTEGER NOT NULL CHECK(capacity IN (25, 35, 41)),
             created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (company_id) REFERENCES Bus_Company(id)
         )
@@ -122,7 +112,11 @@ function createTables() {
             discount REAL NOT NULL,
             usage_limit INTEGER NOT NULL,
             expire_date DATETIME NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            status TEXT NOT NULL DEFAULT 'active' CHECK(status IN ('active','inactive')),
+            used_count INTEGER NOT NULL DEFAULT 0,
+            company_id TEXT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (company_id) REFERENCES Bus_Company(id)
         )
     ");
     

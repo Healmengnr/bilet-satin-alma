@@ -1,6 +1,14 @@
 <?php
 require_once 'config/config.php';
 
+// Admin ve Company Admin'i direkt dashboard'a yönlendir
+if (isLoggedIn()) {
+    if (hasRole('admin') || hasRole('company_admin')) {
+        header('Location: /dashboard/');
+        exit;
+    }
+}
+
 $page_title = 'Ana Sayfa';
 include 'includes/header.php';
 ?>
@@ -28,7 +36,8 @@ include 'includes/header.php';
 </div>
 
 <div class="row">
-    <div class="col-lg-8">
+    <div class="col-lg-12">
+        <?php if (!isLoggedIn() || hasRole('user')): ?>
         <!-- Search Form -->
         <div class="card mb-4">
             <div class="card-header">
@@ -99,6 +108,7 @@ include 'includes/header.php';
                 </form>
             </div>
         </div>
+        <?php endif; ?>
 
         <!-- Popular Routes -->
         <div class="card">
@@ -107,7 +117,7 @@ include 'includes/header.php';
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-12 mb-3">
                         <div class="d-flex align-items-center p-3 border rounded">
                             <i class="bi bi-arrow-right text-primary me-3" style="font-size: 1.5rem;"></i>
                             <div>
@@ -116,7 +126,7 @@ include 'includes/header.php';
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-12 mb-3">
                         <div class="d-flex align-items-center p-3 border rounded">
                             <i class="bi bi-arrow-right text-primary me-3" style="font-size: 1.5rem;"></i>
                             <div>
@@ -125,7 +135,7 @@ include 'includes/header.php';
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-12 mb-3">
                         <div class="d-flex align-items-center p-3 border rounded">
                             <i class="bi bi-arrow-right text-primary me-3" style="font-size: 1.5rem;"></i>
                             <div>
@@ -134,7 +144,7 @@ include 'includes/header.php';
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-12 mb-3">
                         <div class="d-flex align-items-center p-3 border rounded">
                             <i class="bi bi-arrow-right text-primary me-3" style="font-size: 1.5rem;"></i>
                             <div>
@@ -180,54 +190,7 @@ include 'includes/header.php';
                 </div>
             </div>
         <?php else: ?>
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-person-plus"></i> Hesap Oluşturun</h5>
-                </div>
-                <div class="card-body">
-                    <p class="mb-3">Bilet satın almak için hesap oluşturun ve hemen <?php echo formatPrice(800); ?> TL bakiye kazanın!</p>
-                    <div class="d-grid gap-2">
-                        <a href="/register.php" class="btn btn-primary">
-                            <i class="bi bi-person-plus"></i> Kayıt Ol
-                        </a>
-                        <a href="/login.php" class="btn btn-outline-primary">
-                            <i class="bi bi-box-arrow-in-right"></i> Giriş Yap
-                        </a>
-                    </div>
-                </div>
-            </div>
         <?php endif; ?>
-
-        <!-- Features -->
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0"><i class="bi bi-check-circle"></i> Neden Bizi Seçmelisiniz?</h5>
-            </div>
-            <div class="card-body">
-                <ul class="list-unstyled">
-                    <li class="mb-2">
-                        <i class="bi bi-shield-check text-success me-2"></i>
-                        Güvenli ödeme sistemi
-                    </li>
-                    <li class="mb-2">
-                        <i class="bi bi-clock text-primary me-2"></i>
-                        7/24 müşteri desteği
-                    </li>
-                    <li class="mb-2">
-                        <i class="bi bi-phone text-info me-2"></i>
-                        Mobil uyumlu platform
-                    </li>
-                    <li class="mb-2">
-                        <i class="bi bi-ticket text-warning me-2"></i>
-                        Anında bilet iptali
-                    </li>
-                    <li class="mb-2">
-                        <i class="bi bi-percent text-danger me-2"></i>
-                        Özel indirim kuponları
-                    </li>
-                </ul>
-            </div>
-        </div>
     </div>
 </div>
 

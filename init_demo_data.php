@@ -1,172 +1,229 @@
 <?php
-/**
- * Demo verileri oluştur
- */
 
 require_once 'config/config.php';
 
 $pdo = getDBConnection();
 
 try {
-    // Demo firmalar
     $companies = [
-        ['name' => 'Metro Turizm', 'description' => 'Türkiye\'nin en büyük otobüs firması', 'contact_email' => 'info@metroturizm.com', 'contact_phone' => '0850 222 22 22'],
-        ['name' => 'Pamukkale Turizm', 'description' => 'Güvenilir seyahat deneyimi', 'contact_email' => 'info@pamukkale.com', 'contact_phone' => '0850 333 33 33'],
-        ['name' => 'Kamil Koç', 'description' => 'Kaliteli hizmet anlayışı', 'contact_email' => 'info@kamilkoc.com', 'contact_phone' => '0850 444 44 44'],
-        ['name' => 'Ulusoy', 'description' => 'Konforlu yolculuk', 'contact_email' => 'info@ulusoy.com', 'contact_phone' => '0850 555 55 55']
-    ];
-    
-    $stmt = $pdo->prepare("INSERT OR IGNORE INTO companies (name, description, contact_email, contact_phone) VALUES (?, ?, ?, ?)");
-    foreach ($companies as $company) {
-        $stmt->execute([$company[0], $company[1], $company[2], $company[3]]);
-    }
-    
-    // Demo kullanıcılar
-    $users = [
-        // Admin
         [
-            'username' => 'admin',
-            'email' => 'admin@biletotomasyonu.com',
-            'password' => hashPassword('admin123'),
-            'full_name' => 'Sistem Yöneticisi',
-            'phone' => '0555 111 11 11',
-            'role' => 'admin',
-            'credit' => 1000.00,
-            'company_id' => null
-        ],
-        // Firma Admin'ler
-        [
-            'username' => 'firma1',
-            'email' => 'firma1@metroturizm.com',
-            'password' => hashPassword('firma123'),
-            'full_name' => 'Metro Turizm Admin',
-            'phone' => '0555 222 22 22',
-            'role' => 'firma_admin',
-            'credit' => 500.00,
-            'company_id' => 1
+            'id' => generateUUID(), 
+            'name' => 'Metro Turizm', 
+            'logo_path' => '/assets/images/metro-logo.png',
+            'contact_email' => 'info@metroturizm.com',
+            'contact_phone' => '0850 222 22 22'
         ],
         [
-            'username' => 'firma2',
-            'email' => 'firma2@pamukkale.com',
-            'password' => hashPassword('firma123'),
-            'full_name' => 'Pamukkale Admin',
-            'phone' => '0555 333 33 33',
-            'role' => 'firma_admin',
-            'credit' => 500.00,
-            'company_id' => 2
-        ],
-        // Normal kullanıcılar
-        [
-            'username' => 'user1',
-            'email' => 'user1@example.com',
-            'password' => hashPassword('user123'),
-            'full_name' => 'Ahmet Yılmaz',
-            'phone' => '0555 444 44 44',
-            'role' => 'user',
-            'credit' => 200.00,
-            'company_id' => null
+            'id' => generateUUID(), 
+            'name' => 'Pamukkale Turizm', 
+            'logo_path' => '/assets/images/pamukkale-logo.png',
+            'contact_email' => 'info@pamukkale.com',
+            'contact_phone' => '0850 333 33 33'
         ],
         [
-            'username' => 'user2',
-            'email' => 'user2@example.com',
-            'password' => hashPassword('user123'),
-            'full_name' => 'Ayşe Demir',
-            'phone' => '0555 555 55 55',
-            'role' => 'user',
-            'credit' => 150.00,
-            'company_id' => null
+            'id' => generateUUID(), 
+            'name' => 'Kamil Koç', 
+            'logo_path' => '/assets/images/kamilkoc-logo.png',
+            'contact_email' => 'info@kamilkoc.com',
+            'contact_phone' => '0850 444 44 44'
+        ],
+        [
+            'id' => generateUUID(), 
+            'name' => 'Ulusoy', 
+            'logo_path' => '/assets/images/ulusoy-logo.png',
+            'contact_email' => 'info@ulusoy.com',
+            'contact_phone' => '0850 555 55 55'
         ]
     ];
     
-    $stmt = $pdo->prepare("INSERT OR IGNORE INTO users (username, email, password, full_name, phone, role, credit, company_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt = $pdo->prepare("INSERT OR IGNORE INTO Bus_Company (id, name, logo_path, contact_email, contact_phone) VALUES (?, ?, ?, ?, ?)");
+    foreach ($companies as $company) {
+        $stmt->execute([$company['id'], $company['name'], $company['logo_path'], $company['contact_email'], $company['contact_phone']]);
+    }
+    
+    $users = [
+        [
+            'id' => generateUUID(),
+            'full_name' => 'Sistem Yöneticisi',
+            'email' => 'admin@healmego.com',
+            'password' => hashPassword('admin123'),
+            'role' => 'admin',
+            'company_id' => null,
+            'balance' => 10000.00
+        ],
+        [
+            'id' => generateUUID(),
+            'full_name' => 'Hilmi Enginar',
+            'email' => 'hilmi@healmego.com',
+            'password' => hashPassword('hilmipro123'),
+            'role' => 'user',
+            'company_id' => null,
+            'balance' => 1500.00
+        ],
+        [
+            'id' => generateUUID(),
+            'full_name' => 'Testo Taylan',
+            'email' => 'testo@healmego.com',
+            'password' => hashPassword('hilmipro123'),
+            'role' => 'user',
+            'company_id' => null,
+            'balance' => 1200.00
+        ],
+        [
+            'id' => generateUUID(),
+            'full_name' => 'Hasan Arda Kaşıkçı',
+            'email' => 'hasan@healmego.com',
+            'password' => hashPassword('hilmipro123'),
+            'role' => 'user',
+            'company_id' => null,
+            'balance' => 800.00
+        ],
+        [
+            'id' => generateUUID(),
+            'full_name' => 'Mehmet İnce',
+            'email' => 'mehmet@healmego.com',
+            'password' => hashPassword('hilmipro123'),
+            'role' => 'user',
+            'company_id' => null,
+            'balance' => 2000.00
+        ],
+        [
+            'id' => generateUUID(),
+            'full_name' => 'Kontravolta Fevzi',
+            'email' => 'fevzi@healmego.com',
+            'password' => hashPassword('hilmipro123'),
+            'role' => 'user',
+            'company_id' => null,
+            'balance' => 900.00
+        ],
+        [
+            'id' => generateUUID(),
+            'full_name' => 'Metro Turizm Admin',
+            'email' => 'admin@metroturizm.com',
+            'password' => hashPassword('admin123'),
+            'role' => 'company_admin',
+            'company_id' => $companies[0]['id'],
+            'balance' => 5000.00
+        ],
+        [
+            'id' => generateUUID(),
+            'full_name' => 'Pamukkale Admin',
+            'email' => 'admin@pamukkale.com',
+            'password' => hashPassword('admin123'),
+            'role' => 'company_admin',
+            'company_id' => $companies[1]['id'],
+            'balance' => 5000.00
+        ]
+    ];
+    
+    $stmt = $pdo->prepare("INSERT OR IGNORE INTO User (id, full_name, email, password, role, company_id, balance) VALUES (?, ?, ?, ?, ?, ?, ?)");
     foreach ($users as $user) {
         $stmt->execute([
-            $user['username'],
-            $user['email'], 
-            $user['password'],
+            $user['id'],
             $user['full_name'],
-            $user['phone'],
+            $user['email'],
+            $user['password'],
             $user['role'],
-            $user['credit'],
-            $user['company_id']
+            $user['company_id'],
+            $user['balance']
         ]);
     }
     
     // Demo seferler
-    $cities = ['istanbul', 'ankara', 'izmir', 'antalya', 'bursa', 'adana'];
-    $cityNames = [
-        'istanbul' => 'İstanbul',
-        'ankara' => 'Ankara', 
-        'izmir' => 'İzmir',
-        'antalya' => 'Antalya',
-        'bursa' => 'Bursa',
-        'adana' => 'Adana'
-    ];
-    
+    $cities = ['İstanbul', 'Ankara', 'İzmir', 'Antalya', 'Bursa', 'Adana'];
     $trips = [];
-    $prices = [120, 150, 180, 200, 250, 300];
     
-    // Her firma için seferler oluştur
-    for ($companyId = 1; $companyId <= 4; $companyId++) {
-        for ($i = 0; $i < 20; $i++) {
+    for ($companyIndex = 0; $companyIndex < count($companies); $companyIndex++) {
+        $companyId = $companies[$companyIndex]['id'];
+        
+        for ($i = 0; $i < 15; $i++) {
             $departureCity = $cities[array_rand($cities)];
-            $arrivalCity = $cities[array_rand($cities)];
+            $destinationCity = $cities[array_rand($cities)];
             
-            // Aynı şehir olmasın
-            while ($departureCity === $arrivalCity) {
-                $arrivalCity = $cities[array_rand($cities)];
+            while ($departureCity === $destinationCity) {
+                $destinationCity = $cities[array_rand($cities)];
             }
             
             $departureDate = date('Y-m-d', strtotime('+' . rand(1, 30) . ' days'));
             $departureTime = sprintf('%02d:%02d', rand(6, 23), rand(0, 1) * 30);
-            $arrivalTime = date('H:i', strtotime($departureTime . ' +' . rand(4, 12) . ' hours'));
-            $price = $prices[array_rand($prices)];
-            $availableSeats = rand(5, 45);
+            $arrivalTime = date('Y-m-d H:i:s', strtotime($departureDate . ' ' . $departureTime . ' +' . rand(4, 12) . ' hours'));
+            $departureDateTime = $departureDate . ' ' . $departureTime . ':00';
+            $price = rand(100, 300) * 10;
+
+            $allowedCapacities = [25, 35, 41];
+            $capacity = $allowedCapacities[array_rand($allowedCapacities)];
             
             $trips[] = [
-                $companyId,
-                $cityNames[$departureCity],
-                $cityNames[$arrivalCity],
-                $departureDate,
-                $departureTime,
-                $arrivalTime,
-                $price,
-                45,
-                $availableSeats,
-                'active'
+                'id' => generateUUID(),
+                'company_id' => $companyId,
+                'destination_city' => $destinationCity,
+                'arrival_time' => $arrivalTime,
+                'departure_time' => $departureDateTime,
+                'departure_city' => $departureCity,
+                'price' => $price,
+                'capacity' => $capacity
             ];
         }
     }
     
-    $stmt = $pdo->prepare("INSERT OR IGNORE INTO trips (company_id, departure_city, arrival_city, departure_date, departure_time, arrival_time, price, total_seats, available_seats, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt = $pdo->prepare("INSERT OR IGNORE INTO Trips (id, company_id, destination_city, arrival_time, departure_time, departure_city, price, capacity) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
     foreach ($trips as $trip) {
         $stmt->execute([
-            $trip[0], $trip[1], $trip[2], $trip[3], $trip[4], 
-            $trip[5], $trip[6], $trip[7], $trip[8], $trip[9]
+            $trip['id'],
+            $trip['company_id'],
+            $trip['destination_city'],
+            $trip['arrival_time'],
+            $trip['departure_time'],
+            $trip['departure_city'],
+            $trip['price'],
+            $trip['capacity']
         ]);
     }
     
-    // Demo kuponlar
     $coupons = [
-        ['INDIRIM10', 10, 100, 1, date('Y-m-d'), date('Y-m-d', strtotime('+30 days')), 'active'],
-        ['INDIRIM20', 20, 50, 1, date('Y-m-d'), date('Y-m-d', strtotime('+30 days')), 'active'],
-        ['YENI25', 25, 30, null, date('Y-m-d'), date('Y-m-d', strtotime('+30 days')), 'active'],
-        ['METRO15', 15, 200, 1, date('Y-m-d'), date('Y-m-d', strtotime('+30 days')), 'active'],
-        ['PAMUKKALE20', 20, 150, 2, date('Y-m-d'), date('Y-m-d', strtotime('+30 days')), 'active']
+        [
+            'id' => generateUUID(),
+            'code' => 'INDIRIM10',
+            'discount' => 10.0,
+            'usage_limit' => 100,
+            'expire_date' => date('Y-m-d H:i:s', strtotime('+30 days'))
+        ],
+        [
+            'id' => generateUUID(),
+            'code' => 'INDIRIM20',
+            'discount' => 20.0,
+            'usage_limit' => 50,
+            'expire_date' => date('Y-m-d H:i:s', strtotime('+30 days'))
+        ],
+        [
+            'id' => generateUUID(),
+            'code' => 'YENI25',
+            'discount' => 25.0,
+            'usage_limit' => 30,
+            'expire_date' => date('Y-m-d H:i:s', strtotime('+30 days'))
+        ],
+        [
+            'id' => generateUUID(),
+            'code' => 'METRO15',
+            'discount' => 15.0,
+            'usage_limit' => 200,
+            'expire_date' => date('Y-m-d H:i:s', strtotime('+30 days'))
+        ]
     ];
     
-    $stmt = $pdo->prepare("INSERT OR IGNORE INTO coupons (code, discount_percentage, max_usage, company_id, valid_from, valid_until, status) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmt = $pdo->prepare("INSERT OR IGNORE INTO Coupons (id, code, discount, usage_limit, expire_date, status, used_count, company_id) VALUES (?, ?, ?, ?, ?, 'active', 0, NULL)");
     foreach ($coupons as $coupon) {
         $stmt->execute([
-            $coupon[0], $coupon[1], $coupon[2], $coupon[3], 
-            $coupon[4], $coupon[5], $coupon[6]
+            $coupon['id'],
+            $coupon['code'],
+            $coupon['discount'],
+            $coupon['usage_limit'],
+            $coupon['expire_date']
         ]);
     }
     
     echo "Demo veriler başarıyla oluşturuldu!\n";
-    echo "Admin: admin / admin123\n";
-    echo "Firma Admin: firma1 / firma123\n";
-    echo "User: user1 / user123\n";
+    echo "Toplam " . count($users) . " kullanıcı, " . count($trips) . " sefer oluşturuldu.\n";
     
 } catch (Exception $e) {
     echo "Hata: " . $e->getMessage() . "\n";

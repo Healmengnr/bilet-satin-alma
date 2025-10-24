@@ -1,5 +1,3 @@
-// Main JavaScript for Bilet Otomasyonu
-
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize tooltips
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
