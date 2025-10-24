@@ -29,3 +29,9 @@ logs/
 
 # Notlar
 notlarım.txt
+
+# Windows geçici dosyaları
+*.tmp
+*.TMP
+*~RF*
+*:Zone.Identifier

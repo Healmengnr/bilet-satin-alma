@@ -35,6 +35,7 @@ RewriteRule .* - [F,L]
 
 RewriteCond %{REQUEST_URI} ^/dashboard/ [NC]
 RewriteCond %{QUERY_STRING} !^$ [NC]
+RewriteCond %{QUERY_STRING} !^id=[a-zA-Z0-9\-]*$ [NC]
 RewriteRule .* - [F,L]
 
 RewriteCond %{REQUEST_URI} ^/api/ [NC]
