@@ -1,73 +1,28 @@
 # PHP
 *.log
-*.tmp
-*.cache
-*.swp
-*.swo
-*~
 
 # Composer
 /vendor/
 composer.phar
-composer.lock
 
 # Database
-*.db
 *.sqlite
 *.sqlite3
 /database/*.sqlite
 /database/*.sqlite3
 
-# Environment
-.env
-.env.local
-.env.production
-
-# IDE
-.vscode/
-.idea/
-*.sublime-*
-
-# OS
-.DS_Store
-Thumbs.db
-desktop.ini
-
-# Docker
-.dockerignore
-
-# Logs
-logs/
-*.log
-
 # Temporary files
-tmp/
-temp/
 cookies.txt
+*.TMP
 
 # Backup files
 *.bak
 *.backup
 *.old
 
-# Node modules (if any)
-node_modules/
-npm-debug.log*
-
-# Build artifacts
-build/
-dist/
-
 # Cache
-cache/
 *.cache
 
-# Session files
-sessions/
-
-# Upload directories
-uploads/
-files/
-
-# Apache
-.htaccess.bak
+# Logs
+logs/
+*.log
