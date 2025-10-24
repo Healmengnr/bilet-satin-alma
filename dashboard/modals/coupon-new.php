@@ -1,5 +1,6 @@
 <?php
 require_once '../../config/config.php';
+require_once '../../includes/functions.php';
 
 if (!isLoggedIn() || !hasRole('admin')) {
     http_response_code(403);
@@ -7,13 +8,7 @@ if (!isLoggedIn() || !hasRole('admin')) {
 }
 ?>
 
-<div class="modal-header">
-    <h5 class="modal-title">Yeni Sistem Kuponu</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-</div>
-
 <form id="couponNewForm" action="javascript:void(0)">
-    <div class="modal-body">
         <div class="mb-3">
             <label for="code" class="form-label">Kupon Kodu <span class="text-danger">*</span></label>
             <input type="text" class="form-control" id="code" name="code" required 
@@ -48,7 +43,6 @@ if (!isLoggedIn() || !hasRole('admin')) {
                 </label>
             </div>
         </div>
-    </div>
     
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>

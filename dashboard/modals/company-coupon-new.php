@@ -1,5 +1,6 @@
 <?php
 require_once '../../config/config.php';
+require_once '../../includes/functions.php';
 
 if (!isLoggedIn() || !hasRole('company_admin')) {
     http_response_code(403);
