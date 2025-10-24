@@ -45,9 +45,7 @@ docker exec biletotomasyonu-web-1 php init_demo_data.php
 
 ## Veritabanı Sıfırlama
 ```bash
-# Database klasörünü sil
 rm -rf database/
-
 
 docker exec biletotomasyonu-web-1 php init_demo_data.php
 ```
