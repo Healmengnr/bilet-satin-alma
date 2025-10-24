@@ -23,7 +23,6 @@ docker exec biletotomasyonu-web-1 php init_demo_data.php
 
 ### Erişim
 - **Web Sitesi:** http://localhost:8080
-- **Dashboard:** http://localhost:8080/dashboard
 
 ##  Teknik Özellikler
 
