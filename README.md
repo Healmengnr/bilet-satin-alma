@@ -10,17 +10,14 @@ PHP ile yazılmış modern otobüs bileti satış sistemi. Docker ile paketlenmi
 
 ### Kurulum
 ```bash
-# Repository'yi klonlayın
-git clone https://github.com/KULLANICI_ADI/bilet-satin-alma.git
+
+git clone https://github.com/Healmengnr/bilet-satin-alma.git
 cd bilet-satin-alma
 
-# Docker image'ı build edin
 docker-compose build
 
-# Docker container'ları başlatın
 docker-compose up -d
 
-# Demo verilerini yükleyin
 docker exec biletotomasyonu-web-1 php init_demo_data.php
 ```
 
@@ -48,6 +45,9 @@ docker exec biletotomasyonu-web-1 php init_demo_data.php
 
 ## Veritabanı Sıfırlama
 ```bash
-# Demo verilerini yeniden yükle
+# Database klasörünü sil
+rm -rf database/
+
+
 docker exec biletotomasyonu-web-1 php init_demo_data.php
 ```
