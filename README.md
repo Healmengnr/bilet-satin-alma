@@ -14,6 +14,9 @@ PHP ile yazılmış modern otobüs bileti satış sistemi. Docker ile paketlenmi
 git clone https://github.com/KULLANICI_ADI/bilet-satin-alma.git
 cd bilet-satin-alma
 
+# Docker image'ı build edin
+docker-compose build
+
 # Docker container'ları başlatın
 docker-compose up -d
 
@@ -39,7 +42,7 @@ docker exec biletotomasyonu-web-1 php init_demo_data.php
 - XSS koruması  
 - Path traversal koruması
 - CSRF token sistemi
-- Şifre hash'leme (password_hash)
+- Şifre hash'leme
 - Session güvenliği
 - Rol tabanlı erişim kontrolü
 
@@ -54,20 +57,6 @@ docker exec biletotomasyonu-web-1 php init_demo_data.php
   - mehmet@healmego.com / hilmipro123
   - fevzi@healmego.com / hilmipro123
 
-## 📁 Proje Yapısı
-
-```
-├── api/                 # API endpoints
-├── assets/             # CSS, JS, images
-├── config/             # Konfigürasyon dosyaları
-├── dashboard/          # Admin paneli
-├── includes/           # Ortak dosyalar
-├── vendor/             # Composer dependencies
-├── Dockerfile          # Docker image tanımı
-├── docker-compose.yml  # Docker Compose konfigürasyonu
-└── README.md
-```
-
 ## 🛠️ Geliştirme
 
 ### Docker Komutları
@@ -80,6 +69,9 @@ docker-compose logs -f
 
 # Container'a bağlan
 docker exec -it biletotomasyonu-web-1 bash
+
+# Image'ı yeniden build et
+docker-compose build --no-cache
 ```
 
 ### Veritabanı Sıfırlama
